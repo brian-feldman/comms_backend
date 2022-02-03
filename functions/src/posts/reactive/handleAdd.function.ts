@@ -22,3 +22,32 @@ export const handleAdd = runWith({})
       })
     );
   });
+
+// using batch update/set but it is slow if the data are in small volume because it need to prepare for batching and all
+// const var1 = users.docs
+//     .filter((el) => el.id !== snap?.data()?.owner)
+//     .map((el) => {
+//       const unseenHandler = {
+//         method: "set",
+//         ref: el.ref.collection("unseen_posts").doc(snap?.id),
+//         data: snap.data(),
+//       };
+
+//       return unseenHandler;
+//     });
+
+//   const var2 = users.docs
+//     .filter((el) => el.id !== snap?.data()?.owner)
+//     .map((el) => {
+//       const countHandler = {
+//         method: "update",
+//         ref: el.ref,
+//         data: {
+//           unseen_posts: firestore.FieldValue.increment(1),
+//         },
+//       };
+
+//       return countHandler;
+//     });
+
+//   return firestoreBatchExecuter([...var1, ...var2]);
