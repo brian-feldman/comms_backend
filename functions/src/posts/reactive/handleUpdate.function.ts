@@ -1,10 +1,13 @@
 import { firestore } from "firebase-admin";
 import { runWith } from "firebase-functions/v1";
 
-export const handleAdd = runWith({})
+export const handleUpdate = runWith({})
   .firestore.document("posts/{postId}")
-  .onCreate(async (snap, context) => {
-    const workspace = snap?.data()?.owner_details?.email?.split("@")[1];
+  .onUpdate(async (snap, context) => {
+    if (snap.before.data().reply_count === snap.after.data().reply_count)
+      return;
+
+    const workspace = snap?.after.data()?.owner_details?.email?.split("@")[1];
     if (!workspace) return;
 
     const users = await firestore()
@@ -14,11 +17,9 @@ export const handleAdd = runWith({})
 
     return Promise.allSettled(
       users.docs.map(async (el) => {
-        if (el.id === snap?.data()?.owner) return;
-        await el.ref.update({
-          unseen_posts: firestore.FieldValue.increment(1),
+        return el.ref.collection("unseen_posts").doc(snap?.after.id).update({
+          reply_count: snap?.after.data().reply_count,
         });
-        return el.ref.collection("unseen_posts").doc(snap.id).set(snap.data());
       })
     );
   });

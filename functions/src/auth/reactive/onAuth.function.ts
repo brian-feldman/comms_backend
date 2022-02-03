@@ -1,7 +1,7 @@
 import { firestore } from "firebase-admin";
 import { runWith } from "firebase-functions/v1";
 
-export const handleAdd = runWith({})
+export const onAuth = runWith({})
   .auth.user()
   .onCreate(async (user) => {
     const { uid, displayName, email, photoURL } = user;
