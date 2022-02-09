@@ -7,6 +7,8 @@ export const onAuth = runWith({})
     const { uid, displayName, email, photoURL } = user;
     const workspace = email?.split("@")[1];
 
+    if (!workspace) return;
+
     const userRef = await firestore().collection("users").doc(uid).get();
     if (!userRef.exists) {
       await firestore().collection("users").doc(uid).set({
@@ -15,6 +17,20 @@ export const onAuth = runWith({})
         display_name: displayName,
         photo_url: photoURL,
         unseen_posts: 0,
+        created_at: firestore.FieldValue.serverTimestamp(),
+        updated_at: firestore.FieldValue.serverTimestamp(),
+      });
+    }
+
+    const isWorkspace = await firestore()
+      .collection("workspace")
+      .doc(workspace)
+      .get();
+
+    if (!isWorkspace.exists) {
+      await firestore().collection("workspace").doc(workspace).set({
+        workspace,
+        owner: uid,
         created_at: firestore.FieldValue.serverTimestamp(),
         updated_at: firestore.FieldValue.serverTimestamp(),
       });
