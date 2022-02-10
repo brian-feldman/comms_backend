@@ -17,6 +17,7 @@ export const onAuth = runWith({})
         display_name: displayName,
         photo_url: photoURL,
         unseen_posts: 0,
+        notify_for_posts: true,
         created_at: firestore.FieldValue.serverTimestamp(),
         updated_at: firestore.FieldValue.serverTimestamp(),
       });

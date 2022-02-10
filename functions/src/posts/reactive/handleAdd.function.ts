@@ -15,6 +15,7 @@ export const handleAdd = runWith({})
     return Promise.allSettled(
       users.docs.map(async (el) => {
         if (el.id === snap?.data()?.owner) return;
+        if (!el?.data()?.notify_for_posts) return;
         await el.ref.update({
           unseen_posts: firestore.FieldValue.increment(1),
         });
